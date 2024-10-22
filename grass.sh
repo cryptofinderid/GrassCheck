@@ -30,9 +30,9 @@ while IFS= read -r WALLET_ADDRESS; do
 
         TOTAL_POINTS=$(echo "$RESPONSE" | jq -r '.result.data | to_entries | sort_by(.value) | reverse | .[] |
           if .key | startswith("closedalpha") then
-            "Closed Alpha (Tier " + (.key | split("_") | .[2]) + "): " + (.value | tostring)
+            "Closed Alpha (Tier " + (.key | split("_") | .[1] | gsub("tier";"")) + "): " + (.value | tostring)
           else
-            "Epoch " + (.key | split("_") | .[0][5:]) + " (Tier " + (.key | split("_") | .[1]) + "): " + (.value | tostring)
+            "Epoch " + (.key | split("_") | .[0][5:]) + " (Tier " + (.key | split("_") | .[1] | gsub("tier";"")) + "): " + (.value | tostring)
           end' | tee /dev/tty | awk -F': ' '{ sum += $2 } END { print sum }')
 
         echo "Tokens to Claim: $TOTAL_POINTS"
